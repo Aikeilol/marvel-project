@@ -78,9 +78,8 @@ class CharInfo extends Component {
 
 const View = ({ char }) => {
     const { name, description, thumbnail, homepage, wiki, comics } = char;
-    console.log(comics)
     const imgStyle = thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg' ? 'contain' : 'cover';
-
+    console.log(comics)
     return (
         <>
             <div className="char__basics">
@@ -102,13 +101,15 @@ const View = ({ char }) => {
             </div>
             <div className="char__comics">Comics:</div>
             <ul className="char__comics-list">
-                {comics.map((item, i) => {
-
-                    return (
-                        <li key={i} className="char__comics-item">
-                            <a href={item.resourceURI}>{item.name}</a>
-                        </li>
-                    )
+                {comics.length === 0 ? 'Комиксы не найдены' : comics.map((item, i) => {
+                    if (i < 10) {
+                        return (
+                            <li key={i} className="char__comics-item">
+                                {item.name}
+                            </li>
+                        )
+                    }
+                    return null;
                 })}
             </ul>
         </>
