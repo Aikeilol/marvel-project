@@ -23,32 +23,22 @@ class CharList extends Component {
             .getAllCharacters()
             .then(res => {
                 this.setState({
-                    chars: res.map(char => [char.name, char.thumbnail]),
+                    chars: res,
                     loading: false
                 })
             })
     }
 
-    renderChars = (chars) => {
-        chars.map(char => {
-            return (
-                < li className="char__item" >
-                    <img src={char[1]} alt="abyss" />
-                    <div className="char__name">{char[0]}</div>
-                </li >
-            )
-        })
-    }
-
     render() {
         let { chars, loading } = this.state;
-
         if (!loading) {
             chars = chars.map(char => {
                 return (
-                    < li className="char__item" >
-                        <img src={char[1]} style={{ objectFit: char[1] === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg' ? 'contain' : 'cover' }} alt="abyss" />
-                        <div className="char__name">{char[0]}</div>
+                    < li key={char.id}
+                        className="char__item"
+                        onClick={() => this.props.onCharSelected(char.id)}>
+                        <img src={char.thumbnail} style={{ objectFit: char.thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg' ? 'unset' : 'cover' }} alt="abyss" />
+                        <div className="char__name">{char.name}</div>
                     </li >
                 )
             })
