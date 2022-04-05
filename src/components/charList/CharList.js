@@ -7,6 +7,9 @@ class CharList extends Component {
     state = {
         chars: [],
         loading: true,
+        newListLoading: false,
+        offset: 210,
+        ended: false,
     }
 
     componentDidMount() {
@@ -15,22 +18,43 @@ class CharList extends Component {
 
     marvelService = new MarvelService();
 
+    onRequest = (offset) => {
+        this.onCharListLoading();
+        this.marvelService
+            .getAllCharacters(offset)
+            .then(this.onCharListLoaded)
+    }
+
+    onCharListLoading = () => {
+        this.setState({
+            newListLoading: true,
+        })
+    }
+
+    onCharListLoaded = (newCharList) => {
+        if (newCharList.length < 9) {
+            this.setState({
+                ended: true
+            })
+        }
+
+        this.setState(({ chars, offset }) => ({
+            chars: [...chars, ...newCharList],
+            loading: false,
+            newListLoading: false,
+            offset: offset + 9,
+        }))
+    }
+
     updateCharList = () => {
         this.setState({
             loading: true,
         })
-        this.marvelService
-            .getAllCharacters()
-            .then(res => {
-                this.setState({
-                    chars: res,
-                    loading: false
-                })
-            })
+        this.onRequest();
     }
 
     render() {
-        let { chars, loading } = this.state;
+        let { chars, loading, newListLoading, offset, ended } = this.state;
         if (!loading) {
             chars = chars.map(char => {
                 return (
@@ -51,9 +75,13 @@ class CharList extends Component {
                 <ul className="char__grid" style={{ display: loading ? 'flex' : 'grid', justifyContent: 'center' }}>
                     {chars}
                 </ul>
-                <button className="button button__main button__long">
+                {ended === false ? <button
+                    className="button button__main button__long"
+                    disabled={newListLoading}
+                    onClick={() => this.onRequest(offset)}
+                >
                     <div className="inner">load more</div>
-                </button>
+                </button> : 'Персонажи закончились'}
             </div >
         )
     }
