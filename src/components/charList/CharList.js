@@ -53,14 +53,38 @@ class CharList extends Component {
         this.onRequest();
     }
 
+    refArr = [];
+
+    setRef = (ref) => {
+        this.refArr.push(ref);
+    }
+
+    focusOnItem = (id) => {
+        this.refArr.forEach(item => item.classList.remove('char__item_selected'));
+        this.refArr[id].classList.add('char__item_selected');
+        this.refArr[id].focus();
+    }
+
     render() {
         let { chars, loading, newListLoading, offset, ended } = this.state;
         if (!loading) {
-            chars = chars.map(char => {
+            chars = chars.map((char, i) => {
                 return (
                     < li key={char.id}
+                        tabIndex={0}
+                        ref={this.setRef}
                         className="char__item"
-                        onClick={() => this.props.onCharSelected(char.id)}>
+                        onClick={() => {
+                            this.props.onCharSelected(char.id)
+                            this.focusOnItem(i)
+                        }}
+                        onKeyPress={(e) => {
+                            if (e.key === ' ' || e.key === "Enter") {
+                                this.props.onCharSelected(char.id);
+                                this.focusOnItem(i);
+                            }
+                        }}
+                    >
                         <img src={char.thumbnail} style={{ objectFit: char.thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg' ? 'unset' : 'cover' }} alt="abyss" />
                         <div className="char__name">{char.name}</div>
                     </li >
@@ -86,5 +110,6 @@ class CharList extends Component {
         )
     }
 }
+
 
 export default CharList;

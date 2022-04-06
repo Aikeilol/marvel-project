@@ -1,5 +1,6 @@
 import './charInfo.scss';
 import { Component } from 'react/cjs/react.production.min';
+import PropTypes from 'prop-types';
 import MarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -79,7 +80,6 @@ class CharInfo extends Component {
 const View = ({ char }) => {
     const { name, description, thumbnail, homepage, wiki, comics } = char;
     const imgStyle = thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg' ? 'contain' : 'cover';
-    console.log(comics)
     return (
         <>
             <div className="char__basics">
@@ -114,6 +114,10 @@ const View = ({ char }) => {
             </ul>
         </>
     )
+}
+
+CharInfo.propTypes = {
+    charId: PropTypes.number,
 }
 
 export default CharInfo;
